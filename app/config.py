@@ -1,21 +1,26 @@
-# import os
-# from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings
+from pydantic import SecretStr
 
-#
-# class Settings(BaseSettings):
-#     DB_HOST: str
-#     DB_PORT: int
-#     DB_NAME: str
-#     DB_USER: str
-#     DB_PASSWORD: str
-#     model_config = SettingsConfigDict(
-#         env_file=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env")
-#     )
-#
 
-# settings = Settings()
+class Settings(BaseSettings):
+    # TODO убрать значения по умолчанию при переносе приложения в Docker
+    ORIGINS: str = "*"
+    ROOT_PATH: str = ""
+    ENV: str = "DEV"
+    LOG_LEVEL: str = "DEBUG"
 
-#
-# def get_db_url():
-#     return (f"postgresql+asyncpg://{settings.DB_USER}:{settings.DB_PASSWORD}@"
-#             f"{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}")
+    POSTGRES_SCHEMA: str = "public"
+    POSTGRES_HOST: str = "localhost"
+    POSTGRES_DB: str = "task2"
+    POSTGRES_PORT: int = 5432
+    POSTGRES_USER: SecretStr = "postgres"
+    POSTGRES_PASSWORD: SecretStr = "postgres"
+    POSTGRES_RECONNECT_INTERVAL_SEC: int = 1
+
+    @property
+    def postgres_url(self) -> str:
+        creds = f"{self.POSTGRES_USER.get_secret_value()}:{self.POSTGRES_PASSWORD.get_secret_value()}"
+        return f"postgresql+asyncpg://{creds}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+
+
+settings = Settings()
