@@ -11,6 +11,8 @@ services:
     user: ${POSTGRES_USER}
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - app_db_network
     ports:
       - '127.0.0.1:5436:5432'
     healthcheck:
@@ -19,6 +21,33 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+app:
+  depends_on:
+    - postgres
+  image: fastapi_app
+  volumes:
+    - ./src:/app/src
+  env_file:
+    - .env
+  networks:
+    - app_db_network
+  ports:
+    - '127.0.0.1:8020:8000'
+  build:
+    context: .
+  pull_policy: build
+  entrypoint: sh -c "./app/start.sh"
+
+
+
+networks:
+  app_db_network:
+    name: app_db_network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.16.0.0/16
 
 
 volumes:
