@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from app.database import SessionLocal, engine
-from app import models
+from busesdb import models
 
 app = FastAPI()
 
