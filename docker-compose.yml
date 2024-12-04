@@ -27,13 +27,18 @@ services:
       - postgres
     image: fastapi_app
     volumes:
-      - ./src:/app/src
+      - ./src/app:/src/app
+      - ./src/busesdb:/src/busesdb
+
+#      - ./src/app:/app/src/app
+#      - ./src/busesdb:/app/src/busesdb
+#      - ./src:/src
     env_file:
       - .env
     networks:
       - app_db_network
     ports:
-      - '127.0.0.1:8020:8000'
+      - '127.0.0.1:8000:8000'
     build:
       context: .
     pull_policy: build

@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, Boolean
 from app.database import Base
 
 class Bus(Base):
-    __tablename__ = "buses"
+    __tablename__ = "busestest"
 
     gos_number = Column(String(10), primary_key=True)
     capacity = Column(Integer, nullable=False)

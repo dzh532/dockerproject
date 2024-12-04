@@ -11,8 +11,8 @@ class Settings(BaseSettings):
 
     POSTGRES_SCHEMA: str = "public"
     POSTGRES_HOST: str = "localhost"
-    POSTGRES_DB: str = "task2"
-    POSTGRES_PORT: int = 5432
+    POSTGRES_DB: str = "postgres"
+    POSTGRES_PORT: int = 5436
     POSTGRES_USER: SecretStr = "postgres"
     POSTGRES_PASSWORD: SecretStr = "postgres"
     POSTGRES_RECONNECT_INTERVAL_SEC: int = 1
