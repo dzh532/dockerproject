@@ -7,6 +7,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.routes import router
+from app.buses_routes import bus_router
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +31,8 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    app.include_router(router, prefix="/api", tags=["User APIs"])
+    # app.include_router(router, prefix="/api", tags=["User APIs"])
+    app.include_router(bus_router, prefix="/api", tags=["buses"])
 
     return app
 
