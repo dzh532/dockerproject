@@ -6,7 +6,6 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.routes import router
 from app.buses_routes import bus_router
 
 logger = logging.getLogger(__name__)

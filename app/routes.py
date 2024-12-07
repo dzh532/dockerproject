@@ -1,8 +1,7 @@
-from fastapi import APIRouter, HTTPException, status, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, HTTPException, status
 from sqlalchemy import select
-from busesdb.models import Bus
-from busesdb.schemas import BusSchema
+from app.busesdb.models import Bus
+from app.busesdb.schemas import BusSchema
 from app.database import database
 
 router = APIRouter()

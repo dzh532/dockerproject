@@ -14,8 +14,6 @@ from app.config import settings
 from app.database import metadata
 # from project.infrastructure.postgres.models import *  # noqa
 
-from busesdb.models import Bus
-
 CREATE_SCHEMA_QUERY = f"CREATE SCHEMA IF NOT EXISTS {settings.POSTGRES_SCHEMA};"
 
 config = context.config

@@ -27,8 +27,9 @@ services:
       - postgres
     image: fastapi_app
     volumes:
-      - ./src/app:/src/app
-      - ./src/busesdb:/src/busesdb
+      - ./app:/src/app
+#      - ./src/app:/src/app
+#      - ./src/busesdb:/src/busesdb
 
 #      - ./src/app:/app/src/app
 #      - ./src/busesdb:/app/src/busesdb

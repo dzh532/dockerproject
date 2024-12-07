@@ -1,8 +1,8 @@
 from typing import Type, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
-from busesdb.schemas import BusSchema
-from busesdb.models import Bus
+from app.busesdb.schemas import BusSchema
+from app.busesdb.models import Bus
 from app.config import settings
 
 
