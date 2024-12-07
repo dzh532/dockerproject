@@ -12,6 +12,7 @@ from alembic import context
 # access to the values within the .ini file in use.
 from app.config import settings
 from app.database import metadata
+from app.busesdb.models import *
 # from project.infrastructure.postgres.models import *  # noqa
 
 CREATE_SCHEMA_QUERY = f"CREATE SCHEMA IF NOT EXISTS {settings.POSTGRES_SCHEMA};"
