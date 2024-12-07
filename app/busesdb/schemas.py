@@ -109,7 +109,7 @@ class RouteSheetSchema(BaseModel):
    id: int
    number_vy: int
    number_route: str
-   date=date
+   date: date
    gos_number_bus: str
 
    model_config=ConfigDict(from_attributes=True)
@@ -119,8 +119,8 @@ class ReviewPassengerSchema(BaseModel):
    id_passenger:int
    gos_number_bus:str
    grade:int
-   text_review=Optional[str]=None
-   date=date
+   text_review: Optional[str]=None
+   date: date
 
    model_config=ConfigDict(from_attributes=True)
 

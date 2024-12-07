@@ -6,7 +6,39 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.buses_routes import bus_router
+
+from app.routes.buses_routes import bus_router
+from app.routes.company_routes import company_router
+from app.routes.delay_voyage_routes import delay_router
+from app.routes.driver_routes import driver_router
+from app.routes.order_repair_routes import order_repair_router
+from app.routes.passenger_routes import passenger_router
+from app.routes.report_income_company_routes import report_income_router
+from app.routes.review_passenger_routes import review_passenger_router
+from app.routes.route_routes import route_router
+from app.routes.route_sheet_routes import route_sheet_router
+from app.routes.stop_routes import stop_router
+from app.routes.stops_and_routes_routes import stops_and_routes_router
+from app.routes.ticket_routes import ticket_router
+from app.routes.type_repair_routes import type_repair_router
+
+
+routers = [
+    bus_router,
+    company_router,
+    driver_router,
+    delay_router,
+    report_income_router,
+    type_repair_router,
+    order_repair_router,
+    stop_router,
+    route_router,
+    stops_and_routes_router,
+    passenger_router,
+    ticket_router,
+    route_sheet_router,
+    review_passenger_router,
+]
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +63,9 @@ def create_app() -> FastAPI:
     )
 
     # app.include_router(router, prefix="/api", tags=["User APIs"])
-    app.include_router(bus_router, prefix="/api", tags=["buses"])
+    # app.include_router(bus_router, prefix="/api", tags=["buses"])
+    for router in routers:
+        app.include_router(router, prefix="/api", tags=[router.prefix.strip("/")])
 
     return app
 
@@ -58,7 +92,7 @@ if __name__ == "__main__":
 # from fastapi import FastAPI, Depends
 # from sqlalchemy.orm import Session
 # from app.database import SessionLocal, engine
-# from busesdb import models
+# from app.busesdb import models
 # import os
 # from dotenv import load_dotenv
 #

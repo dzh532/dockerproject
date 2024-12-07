@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status
 from app.busesdb.schemas import BusSchema
 from app.database import database
-from app.user_repo import BusRepository
+from app.repo.buses_repo import BusRepository
 
 bus_router = APIRouter()
 bus_repo = BusRepository()
