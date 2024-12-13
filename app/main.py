@@ -22,6 +22,7 @@ from app.routes.stops_and_routes_routes import stops_and_routes_router
 from app.routes.ticket_routes import ticket_router
 from app.routes.type_repair_routes import type_repair_router
 
+from app.auth.jwt_auth import router as jwt_router
 
 routers = [
     bus_router,
@@ -67,6 +68,7 @@ def create_app() -> FastAPI:
     for router in routers:
         app.include_router(router, prefix="/api", tags=[router.prefix.strip("/")])
 
+    app.include_router(jwt_router, prefix="/jwt", tags=["JWT"])
     return app
 
 

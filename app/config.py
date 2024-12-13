@@ -1,6 +1,6 @@
 from pydantic_settings import BaseSettings
 from pydantic import SecretStr
-
+from app.busesdb.schemas import AuthJWT
 
 class Settings(BaseSettings):
     # TODO убрать значения по умолчанию при переносе приложения в Docker
@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     POSTGRES_USER: SecretStr = "postgres"
     POSTGRES_PASSWORD: SecretStr = "postgres"
     POSTGRES_RECONNECT_INTERVAL_SEC: int = 1
+
+    auth_jwt: AuthJWT = AuthJWT()
 
     @property
     def postgres_url(self) -> str:
