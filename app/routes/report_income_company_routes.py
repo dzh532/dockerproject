@@ -5,7 +5,7 @@ from app.busesdb.models import ReportIncomeCompany
 from app.database import database
 from app.repo.report_income_company_repo import ReportIncomeCompanyRepository
 
-report_income_router = APIRouter()
+report_income_router = APIRouter(prefix="/report_income")
 report_income_repo = ReportIncomeCompanyRepository()
 
 @report_income_router.get("/reports", response_model=list[ReportIncomeCompanySchema], status_code=status.HTTP_200_OK)

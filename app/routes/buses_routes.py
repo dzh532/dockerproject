@@ -3,7 +3,7 @@ from app.busesdb.schemas import BusSchema
 from app.database import database
 from app.repo.buses_repo import BusRepository
 
-bus_router = APIRouter()
+bus_router = APIRouter(prefix="/buses")
 bus_repo = BusRepository()
 
 

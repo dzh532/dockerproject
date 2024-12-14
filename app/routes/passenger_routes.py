@@ -5,7 +5,7 @@ from app.busesdb.models import Passenger
 from app.database import database
 from app.repo.passengers_repo import PassengerRepository
 
-passenger_router = APIRouter()
+passenger_router = APIRouter(prefix="/passenger")
 passenger_repo = PassengerRepository()
 
 @passenger_router.get("/passengers", response_model=list[PassengerSchema], status_code=status.HTTP_200_OK)

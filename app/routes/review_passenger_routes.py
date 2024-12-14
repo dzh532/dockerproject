@@ -5,7 +5,7 @@ from app.busesdb.models import ReviewPassenger
 from app.database import database
 from app.repo.review_passenger_repo import ReviewPassengerRepository
 
-review_passenger_router = APIRouter()
+review_passenger_router = APIRouter(prefix="/review_passenger")
 review_passenger_repo = ReviewPassengerRepository()
 
 @review_passenger_router.get("/reviews", response_model=list[ReviewPassengerSchema], status_code=status.HTTP_200_OK)

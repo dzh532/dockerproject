@@ -5,7 +5,7 @@ from app.busesdb.models import RouteSheet
 from app.database import database
 from app.repo.route_sheet_repo import RouteSheetRepository
 
-route_sheet_router = APIRouter()
+route_sheet_router = APIRouter(prefix="/route_sheet")
 route_sheet_repo = RouteSheetRepository()
 
 @route_sheet_router.get("/route_sheets", response_model=list[RouteSheetSchema], status_code=status.HTTP_200_OK)

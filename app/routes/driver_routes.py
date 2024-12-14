@@ -5,7 +5,7 @@ from app.busesdb.models import Driver
 from app.database import database
 from app.repo.driver_repo import DriverRepository
 
-driver_router = APIRouter()
+driver_router = APIRouter(prefix="/driver")
 driver_repo = DriverRepository()
 
 @driver_router.get("/drivers", response_model=list[DriverSchema], status_code=status.HTTP_200_OK)

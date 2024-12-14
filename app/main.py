@@ -63,12 +63,10 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    # app.include_router(router, prefix="/api", tags=["User APIs"])
-    # app.include_router(bus_router, prefix="/api", tags=["buses"])
+    app.include_router(jwt_router, prefix="/jwt", tags=["JWT"])
     for router in routers:
         app.include_router(router, prefix="/api", tags=[router.prefix.strip("/")])
 
-    app.include_router(jwt_router, prefix="/jwt", tags=["JWT"])
     return app
 
 
@@ -89,37 +87,3 @@ if __name__ == "__main__":
     logger.debug(f"{settings.postgres_url}=")
     loop = asyncio.get_event_loop()
     loop.run_until_complete(run())
-
-# import uvicorn
-# from fastapi import FastAPI, Depends
-# from sqlalchemy.orm import Session
-# from app.database import SessionLocal, engine
-# from app.busesdb import models
-# import os
-# from dotenv import load_dotenv
-#
-# load_dotenv()
-# app = FastAPI()
-#
-# models.base.metadata.create_all(bind=engine)
-#
-# def get_db():
-#     db = SessionLocal()
-#     try:
-#         yield db
-#     finally:
-#         db.close()
-#
-#
-# @app.get("/")
-# async def home():
-#     return "Home page"
-#
-# @app.get("/bus")
-# async def read_buses(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-#     buses = db.query(models.Bus).offset(skip).limit(limit).all()
-#     return buses
-#
-# if __name__ == "__main__":
-#     import uvicorn
-#     uvicorn.run(app, host="127.0.0.1", port=8000)

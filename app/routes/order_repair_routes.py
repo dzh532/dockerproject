@@ -5,7 +5,7 @@ from app.busesdb.models import OrderRepair
 from app.database import database
 from app.repo.order_repair_repo import OrderRepairRepository
 
-order_repair_router = APIRouter()
+order_repair_router = APIRouter(prefix="/order_repair")
 order_repair_repo = OrderRepairRepository()
 
 @order_repair_router.get("/order_repair", response_model=list[OrderRepairSchema], status_code=status.HTTP_200_OK)

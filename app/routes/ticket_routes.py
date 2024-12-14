@@ -5,7 +5,7 @@ from app.busesdb.models import Ticket
 from app.database import database
 from app.repo.tickets_repo import TicketRepository
 
-ticket_router = APIRouter()
+ticket_router = APIRouter(prefix="/ticket")
 ticket_repo = TicketRepository()
 
 @ticket_router.get("/tickets", response_model=list[TicketSchema], status_code=status.HTTP_200_OK)

@@ -5,7 +5,7 @@ from app.busesdb.models import StopsAndRoutes
 from app.database import database
 from app.repo.stops_and_routes_repo import StopsAndRoutesRepository
 
-stops_and_routes_router = APIRouter()
+stops_and_routes_router = APIRouter(prefix="/stops_and_routes")
 stops_and_routes_repo = StopsAndRoutesRepository()
 
 @stops_and_routes_router.get("/stops_and_routes", response_model=list[StopsAndRoutesSchema], status_code=status.HTTP_200_OK)

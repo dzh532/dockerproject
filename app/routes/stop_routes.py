@@ -5,7 +5,7 @@ from app.busesdb.models import Stop
 from app.database import database
 from app.repo.stops_repo import StopRepository
 
-stop_router = APIRouter()
+stop_router = APIRouter(prefix="/stop")
 stop_repo = StopRepository()
 
 @stop_router.get("/stops", response_model=list[StopSchema], status_code=status.HTTP_200_OK)

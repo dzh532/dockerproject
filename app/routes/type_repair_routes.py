@@ -5,7 +5,7 @@ from app.busesdb.models import TypeRepair
 from app.database import database
 from app.repo.type_repair_repo import TypeRepairRepository
 
-type_repair_router = APIRouter()
+type_repair_router = APIRouter(prefix="/type_repair")
 type_repair_repo = TypeRepairRepository()
 
 @type_repair_router.get("/type_repair", response_model=list[TypeRepairSchema], status_code=status.HTTP_200_OK)

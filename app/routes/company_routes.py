@@ -5,7 +5,7 @@ from app.busesdb.models import Company
 from app.database import database
 from app.repo.company_repo import CompanyRepository
 
-company_router = APIRouter()
+company_router = APIRouter(prefix="/company")
 company_repo = CompanyRepository()
 
 @company_router.get("/companies", response_model=list[CompanySchema], status_code=status.HTTP_200_OK)

@@ -5,7 +5,7 @@ from app.busesdb.models import Route
 from app.database import database
 from app.repo.routes_repo import RouteRepository
 
-route_router = APIRouter()
+route_router = APIRouter(prefix="/route")
 route_repo = RouteRepository()
 
 @route_router.get("/routes", response_model=list[RouteSchema], status_code=status.HTTP_200_OK)

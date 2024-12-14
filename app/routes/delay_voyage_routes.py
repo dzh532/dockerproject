@@ -5,7 +5,7 @@ from app.busesdb.models import DelaysVoyage
 from app.database import database
 from app.repo.delays_voyage_repo import DelayVoyageRepository
 
-delay_router = APIRouter()
+delay_router = APIRouter(prefix="/delay")
 delay_repo = DelayVoyageRepository()
 
 @delay_router.get("/delays", response_model=list[DelayVoyageSchema], status_code=status.HTTP_200_OK)
