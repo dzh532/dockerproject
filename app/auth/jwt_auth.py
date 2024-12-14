@@ -66,7 +66,7 @@ async def validate_auth_user(
 
     unauthed_exc = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="invalid username or password",
+        detail="Неверное имя пользователя или пароль",
     )
     if not user or not auth_utils.validate_password(password, user.password):
         raise unauthed_exc
@@ -74,7 +74,7 @@ async def validate_auth_user(
     if not user.active:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="user inactive",
+            detail="Пользвоатель не активен",
         )
     return user
 
@@ -91,7 +91,7 @@ def get_current_token_payload(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             # detail=f"invalid token error: {e}",
-            detail=f"invalid token error",
+            detail=f"неверный токен",
         )
     return payload
 
@@ -112,7 +112,7 @@ async def get_current_auth_user(
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="token invalid (user not found)",
+            detail="Токен неверный (пользователь не найден)",
         )
     return user
 
@@ -124,7 +124,7 @@ def get_current_active_auth_user(
         return user
     raise HTTPException(
         status_code=status.HTTP_403_FORBIDDEN,
-        detail="user inactive",
+        detail="Пользователь не активен",
     )
 
 async def get_current_admin_user(
@@ -134,7 +134,7 @@ async def get_current_admin_user(
         return user
     raise HTTPException(
         status_code=status.HTTP_403_FORBIDDEN,
-        detail="User does not have admin privileges",
+        detail="Вы не имеете привелегий админа",
     )
 
 @router.post("/login/", response_model=TokenInfo)
@@ -165,7 +165,7 @@ def auth_user_check_self_info(
 async def admin_route(
     admin: User = Depends(get_current_admin_user),
 ):
-    return {"message": "Welcome, admin!"}
+    return {"message": "Вы вошли как админ"}
 
 @router.post("/register/")
 async def register_user(
@@ -178,4 +178,4 @@ async def register_user(
     new_user = User(name=username, email=email, password=hashed_password)
     db.add(new_user)
     await db.commit()
-    return {"message": "User registered successfully"}
+    return {"message": "Вы успешно зарегистрировались"}
