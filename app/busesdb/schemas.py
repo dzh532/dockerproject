@@ -15,7 +15,7 @@ class AuthJWT(BaseModel):
 class UserSchema(BaseModel):
     model_config = ConfigDict(strict=True)
 
-    username: str
+    name: str
     password: bytes
     email: EmailStr | None = None
     active: bool = True

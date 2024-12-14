@@ -9,7 +9,7 @@ class User(Base):
     email = Column(String(50), unique=True, nullable=False)
     password = Column(String(255), nullable=False)
     is_admin = Column(Boolean, nullable=False, default=False)
-
+    active = Column(Boolean, nullable=False, default=True)
 
 class Bus(Base):
     __tablename__ = "buses"

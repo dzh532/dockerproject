@@ -1,3 +1,6 @@
+from typing import AsyncIterator
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 from jwt.exceptions import InvalidTokenError
 from fastapi import (
     APIRouter,
@@ -11,14 +14,20 @@ from fastapi.security import (
     HTTPAuthorizationCredentials,
     OAuth2PasswordBearer,
 )
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from app.auth import utils as auth_utils
 from app.busesdb.schemas import UserSchema
+from app.database import database
+from app.busesdb.models import User
 
 # http_bearer = HTTPBearer()
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="/jwt/login/",
 )
+
+async def get_db() -> AsyncIterator[AsyncSession]:
+    async with database.session() as session:
+        yield session
 
 class TokenInfo(BaseModel):
     access_token: str
@@ -26,37 +35,40 @@ class TokenInfo(BaseModel):
 
 router = APIRouter()
 
-john = UserSchema(
-    username="john",
-    password=auth_utils.hash_password("qwerty"),
-    email="john@example.com",
-)
+# john = UserSchema(
+#     username="john",
+#     password=auth_utils.hash_password("qwerty"),
+#     email="john@example.com",
+# )
+#
+# sam = UserSchema(
+#     username="sam",
+#     password=auth_utils.hash_password("secret"),
+# )
+#
+# users_db: dict[str, UserSchema] = {
+#     john.username: john,
+#     sam.username: sam,
+# }
 
-sam = UserSchema(
-    username="sam",
-    password=auth_utils.hash_password("secret"),
-)
-
-users_db: dict[str, UserSchema] = {
-    john.username: john,
-    sam.username: sam,
-}
-
-def validate_auth_user(
+async def validate_auth_user(
     username: str = Form(),
     password: str = Form(),
+    db: AsyncSession = Depends(get_db)
 ):
+    # query = await db.execute(
+    #     User.select().where(User.name == name)
+    # )
+    # user = query.scalar_one_or_none()
+    query = select(User).where(User.name == username)
+    result = await db.execute(query)
+    user = result.scalar_one_or_none()
+
     unauthed_exc = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="invalid username or password",
     )
-    if not (user := users_db.get(username)):
-        raise unauthed_exc
-
-    if not auth_utils.validate_password(
-        password=password,
-        hashed_password=user.password,
-    ):
+    if not user or not auth_utils.validate_password(password, user.password):
         raise unauthed_exc
 
     if not user.active:
@@ -83,16 +95,27 @@ def get_current_token_payload(
         )
     return payload
 
-def get_current_auth_user(
-    payload: dict = Depends(get_current_token_payload)
-)-> UserSchema:
-    username: str | None = payload.get("sub")
-    if user := users_db.get(username):
-        return user
-    raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="token invalid (user not found)",
-    )
+async def get_current_auth_user(
+    payload: dict = Depends(get_current_token_payload),
+    db: AsyncSession = Depends(get_db)
+):
+    username = payload.get("sub")
+    # query = await db.execute(
+    #     User.select().where(User.name == name)
+    # )
+    # user = query.scalar_one_or_none()
+
+    query = select(User).where(User.name == username)
+    result = await db.execute(query)
+    user = result.scalar_one_or_none()
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="token invalid (user not found)",
+        )
+    return user
+
 
 def get_current_active_auth_user(
     user: UserSchema = Depends(get_current_auth_user),
@@ -104,13 +127,23 @@ def get_current_active_auth_user(
         detail="user inactive",
     )
 
+async def get_current_admin_user(
+    user: User = Depends(get_current_auth_user),
+):
+    if user.is_admin:
+        return user
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail="User does not have admin privileges",
+    )
+
 @router.post("/login/", response_model=TokenInfo)
-def auth_user_issue_jwt(
-    user: UserSchema = Depends(validate_auth_user),
+async def auth_user_issue_jwt(
+    user: User = Depends(validate_auth_user),
 ):
     jwt_payload = {
-        "sub": user.username,
-        "username": user.username,
+        "sub": user.name,
+        "name": user.name,
         "email": user.email,
     }
     token = auth_utils.encode_jwt(jwt_payload)
@@ -124,6 +157,25 @@ def auth_user_check_self_info(
     user: UserSchema = Depends(get_current_active_auth_user),
 ):
     return{
-        "username": user.username,
+        "name": user.name,
         "email": user.email,
     }
+
+@router.get("/admin/protected/")
+async def admin_route(
+    admin: User = Depends(get_current_admin_user),
+):
+    return {"message": "Welcome, admin!"}
+
+@router.post("/register/")
+async def register_user(
+    username: str = Form(),
+    email: EmailStr = Form(),
+    password: str = Form(),
+    db: AsyncSession = Depends(get_db)
+):
+    hashed_password = auth_utils.hash_password(password).decode()
+    new_user = User(name=username, email=email, password=hashed_password)
+    db.add(new_user)
+    await db.commit()
+    return {"message": "User registered successfully"}

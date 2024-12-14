@@ -1,6 +1,4 @@
 from fastapi import APIRouter, HTTPException, status
-from sqlalchemy.testing.suite.test_reflection import users
-
 from app.busesdb.schemas import UserSchema
 from app.database import database
 from app.repo.user_repo import UserRepository

@@ -40,7 +40,6 @@ def decode_jwt(
 
 def hash_password(
     password: str,
-
 ) -> bytes:
     salt = bcrypt.gensalt()
     pwd_bytes: bytes = password.encode()
@@ -48,11 +47,12 @@ def hash_password(
 
 def validate_password(
     password: str,
-        hashed_password: bytes,
+    hashed_password: str,
 ) -> bool:
     return bcrypt.checkpw(
         password.encode(),
-        hashed_password=hashed_password,
+        # hashed_password=hashed_password,
+        hashed_password.encode(),
     )
 
 # encoded = jwt.encode({"some": "payload"}, private_key, algorithm="RS256")
