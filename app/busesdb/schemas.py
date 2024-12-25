@@ -19,6 +19,7 @@ class UserSchema(BaseModel):
     password: bytes
     email: EmailStr | None = None
     active: bool = True
+    is_admin: bool = False
 
 class BusSchema(BaseModel):
     gos_number: str

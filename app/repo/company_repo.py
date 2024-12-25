@@ -20,6 +20,13 @@ class CompanyRepository:
         company = result.mappings().first()
         return CompanySchema.model_validate(obj=company) if company else None
 
+    async def get_company_by_duration_work(self, session: AsyncSession, min_dur: int) -> list[CompanySchema]:
+        query = text(f"SELECT * FROM get_companies_by_duration(:min_dur)")
+        result = await session.execute(query, {"min_dur": min_dur})
+        company = result.mappings().all()
+        return [CompanySchema.model_validate(obj=comp) for comp in company]
+
+
     async def create_company(self, session: AsyncSession, company_data: CompanySchema) -> CompanySchema:
         new_company = self._collection(**company_data.dict())
         session.add(new_company)

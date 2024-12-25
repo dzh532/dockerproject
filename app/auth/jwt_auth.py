@@ -139,8 +139,13 @@ async def get_current_admin_user(
 
 @router.post("/login/", response_model=TokenInfo)
 async def auth_user_issue_jwt(
-    user: User = Depends(validate_auth_user),
+    # user: User = Depends(validate_auth_user),
+    username: str = Form(),
+    password: str = Form(),
+    db: AsyncSession = Depends(get_db)
 ):
+    user = await validate_auth_user(username, password, db)
+
     jwt_payload = {
         "sub": user.name,
         "name": user.name,
@@ -155,16 +160,15 @@ async def auth_user_issue_jwt(
 @router.get("users/me/")
 def auth_user_check_self_info(
     user: UserSchema = Depends(get_current_active_auth_user),
-):
-    return{
+) -> dict:
+    return {
         "name": user.name,
         "email": user.email,
+        "id_admin": user.is_admin,
     }
 
-@router.get("/admin/protected/")
-async def admin_route(
-    admin: User = Depends(get_current_admin_user),
-):
+@router.get("/admin/protected/", dependencies=[Depends(get_current_admin_user)])
+async def admin_route() -> dict[str, str]:
     return {"message": "Вы вошли как админ"}
 
 @router.post("/register/")
@@ -179,3 +183,9 @@ async def register_user(
     db.add(new_user)
     await db.commit()
     return {"message": "Вы успешно зарегистрировались"}
+
+@router.get("/validate/")
+async def validate_token(
+    user: UserSchema = Depends(get_current_auth_user)
+):
+    return {"message": "Токен валиден"}

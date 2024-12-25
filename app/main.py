@@ -9,6 +9,7 @@ from app.config import settings
 
 from app.routes.buses_routes import bus_router
 from app.routes.company_routes import company_router
+from app.routes.buses_in_company_routes import buses_in_company_router
 from app.routes.delay_voyage_routes import delay_router
 from app.routes.driver_routes import driver_router
 from app.routes.order_repair_routes import order_repair_router
@@ -27,6 +28,7 @@ from app.auth.jwt_auth import router as jwt_router
 routers = [
     bus_router,
     company_router,
+    buses_in_company_router,
     driver_router,
     delay_router,
     report_income_router,

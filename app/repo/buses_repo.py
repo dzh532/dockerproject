@@ -16,6 +16,14 @@ class BusRepository:
         buses = result.mappings().all()
         return [BusSchema.model_validate(obj=bus) for bus in buses]
 
+    async def get_buses_with_air_conditioner(self, session: AsyncSession) -> list[BusSchema]:
+        """Получение автобусов с кондиционерами через хранимую процедуру."""
+        query = text("SELECT * FROM get_buses_with_air_conditioner()")
+        result = await session.execute(query)
+        buses = result.mappings().all()
+        return [BusSchema.model_validate(obj=bus) for bus in buses]
+
+
     async def get_bus_by_gos_number(self, session: AsyncSession, gos_number: str) -> Optional[BusSchema]:
         """Получение автобуса по его гос. номеру."""
         query = text(f"SELECT * FROM {settings.POSTGRES_SCHEMA}.buses WHERE gos_number = :gos_number;")
@@ -50,6 +58,7 @@ class BusRepository:
         result = await session.execute(query, {"gos_number": gos_number})
         await session.commit()
         return result.rowcount > 0
+
 
     async def check_connection(self, session: AsyncSession) -> bool:
         """Проверка подключения к базе данных."""

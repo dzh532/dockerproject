@@ -8,6 +8,20 @@ from app.repo.company_repo import CompanyRepository
 company_router = APIRouter(prefix="/company")
 company_repo = CompanyRepository()
 
+
+@company_router.get(
+    "/company/with_duration_work/{min_dur}",
+    response_model=list[CompanySchema],
+    status_code=status.HTTP_200_OK,
+)
+async def get_company_by_duration_work(min_dur: int) -> list[CompanySchema]:
+    """Получение компаний с определенным сроком работы."""
+    async with database.session() as session:
+        company = await company_repo.get_company_by_duration_work(session=session, min_dur=min_dur)
+        if not company:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Компании не найдены")
+    return company
+
 @company_router.get("/companies", response_model=list[CompanySchema], status_code=status.HTTP_200_OK)
 async def get_all_companies() -> list[CompanySchema]:
     """Получение всех компаний."""
@@ -50,3 +64,6 @@ async def delete_company(name: str) -> None:
         success = await company_repo.delete_company(session=session, name=name)
         if not success:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Компания не найдена")
+
+
+

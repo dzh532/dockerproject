@@ -18,9 +18,6 @@ class Bus(Base):
     capacity = Column(Integer, nullable=False)
     is_air_conditioner = Column(Boolean, nullable=False)
 
-    # def __repr__(self):
-    #     return f"<Bus(gos_number={self.gos_number}, capasity={self.capacity}, is_air_cond={self.is_air_conditioner})>"
-
 class Company(Base):
     __tablename__ = "company"
 
